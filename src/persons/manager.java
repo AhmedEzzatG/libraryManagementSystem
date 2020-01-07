@@ -1,8 +1,8 @@
 package persons;
 
 import IO.jReader;
-import items.publication;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -10,23 +10,34 @@ import java.util.ArrayList;
  */
 public class manager extends user {
 
-    public static void listOfBorrowedPublications() {
+    public manager() {
+    }
+
+    public manager(Scanner in) {
+        super(in);
+    }
+
+    
+    public void listOfBorrowedPublications() {
         ArrayList<String> a = new ArrayList<String>();
-        for (publication e : items.operations.arr) {
-            if (e.getNumberAvaliable() < e.getNumberOfCopies()) {
-                
+        for (user e : operations.users) {
+            for (borrowed b : e.arr) {
+                a.add(e.getUserName() + "\n" + b.toString());
             }
         }
         jReader.showListOfItems(a);
     }
 
     public void listOfOverPeriodBorrowedPublications() {
-        for (user p : library.Library.arr) {
-            for (borrowed item : p.arr) {
-                if (item.overPeriod()) {
-                    //System.out.println(p.getEmail() + ' ' + p.getUserName() + ' ' + item.toString());
+        ArrayList<String> a = new ArrayList<String>();
+        for (user e : operations.users) {
+            for (borrowed b : e.arr) {
+                if (b.overPeriod()) {
+                    a.add(e.getUserName() + "\n" + b.toString());
                 }
             }
         }
+        jReader.showListOfItems(a);
+
     }
 }

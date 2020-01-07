@@ -1,11 +1,8 @@
 package library;
 
 import IO.jReader;
-import items.operations;
-import java.util.ArrayList;
 import java.util.Scanner;
-import persons.manager;
-import persons.user;
+import persons.operations;
 
 /**
  *
@@ -13,56 +10,62 @@ import persons.user;
  */
 public class Library {
 
-    public static ArrayList<user> arr = new ArrayList<user>();
-    public static user activeUser;
     Scanner in = new Scanner(System.in);
 
-    public static void signUp() {
-        user p = new user();
-        arr.add(p);
-        jReader.showMessage("", "");
-        activeUser = p;
-    }
-
-    public static boolean logIn(String email, String password) {
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i).getEmail().equals(email)) {
-                if (arr.get(i).login(password)) {
-                    activeUser = arr.get(i);
-                    return true;
-                }
-                jReader.showMessage("wrong password", "login");
-                return false;
-            }
-        }
-        jReader.showNotFoundMessage("email");
-        return false;
-    }
-
     public static void build() {
-
+        items.operations.build();
+        operations.build();
     }
 
     public static void end() {
-
+        items.operations.end();
+        operations.end();
     }
 
     public static void main(String[] args) {
         build();
         while (true) {
-            int x = jReader.showChooseOptions("welcome", "Welcome", new String[]{"Sing up", "login"});
-            if (x == -1) {
-                end();
-                return;
+            int choose = jReader.showChooseOptions("Welcome in Assiut library management system", "Welcome",
+                    new String[]{"Sing up", "Login"});
+            switch (choose) {
+                case 0:
+                    persons.operations.signUp();
+                    break;
+                case 1:
+                    String email = jReader.next("email", "user informatin");
+                    String password = jReader.next("password", "user informatin");
+                    if (operations.logIn(email, password) == false) {
+                        jReader.showMessage("unsuccessful login", "unsuccessful login , try again");
+                        continue;
+                    }
+                    break;
+                default:
+                    end();
+                    return;
             }
-            if (x == 0) {
-                signUp();
+            String[] options;
+            if (operations.activeUser instanceof persons.manager) {
+                options = new String[]{"publications menu", "personal menu", "manager menu"};
             } else {
-                String email = jReader.next("email", "user informatin");
-                String password = jReader.next("password", "user informatin");
-                if (logIn(email, password) == false) {
-                    jReader.showMessage("unsuccessful login", "unsuccessful login , try again");
-                    continue;
+                options = new String[]{"publications menu", "personal menu"};
+
+            }
+            boolean stayHere = true;
+            while (stayHere) {
+                choose = jReader.showChooseOptions("Welcome " + operations.activeUser.getUserName(),
+                        "Welcome in Assiut library management system", options);
+                switch (choose) {
+                    case 0:
+                        items.operations.menu();
+                        break;
+                    case 1:
+                        operations.personalMenu();
+                        break;
+                    case 2:
+                        operations.managerMenu();
+                        break;
+                    default:
+                        stayHere = false;
                 }
             }
         }

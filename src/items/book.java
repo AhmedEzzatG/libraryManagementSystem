@@ -1,14 +1,23 @@
 package items;
 
+import java.util.Scanner;
+
 /**
  *
  * @author Ahmedezzat
  */
 public class book extends publication {
 
+    public book() {
+    }
+
+    public book(Scanner in) {
+        super(in);
+    }
+    
     @Override
-    public String toString() {
-        return "book " + super.toString();
+    public String getType() {
+        return "book";
     }
 
     @Override
@@ -18,7 +27,7 @@ public class book extends publication {
 
     @Override
     public long getMaxTime() {
-        return 7 * 86400000;
+        return 7;
     }
 
 }

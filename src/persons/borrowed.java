@@ -1,8 +1,7 @@
 package persons;
 
-
-
 import items.publication;
+import java.util.Scanner;
 
 /**
  *
@@ -10,23 +9,41 @@ import items.publication;
  */
 public class borrowed {
 
-    private publication item;
-    private long timeOfBorrowed;
+    private long itemSerialNumber;
+    private long dayOfBorrowed;
 
-    public borrowed(publication item) {
-        this.item = item;
-        timeOfBorrowed = System.currentTimeMillis();
+    public borrowed(long serialNumber) {
+        this.itemSerialNumber = serialNumber;
+        dayOfBorrowed = System.currentTimeMillis() / 86400000;
+    }
+
+    public borrowed(Scanner in) {
+        itemSerialNumber = in.nextLong();
+        in.nextLine();
+        dayOfBorrowed = in.nextLong();
+        in.nextLine();
     }
 
     public boolean overPeriod() {
-        return System.currentTimeMillis() - timeOfBorrowed > item.getMaxTime();
+        int index = items.operations.searchPublication(itemSerialNumber);
+        return borrowedSince() > getItem().getMaxTime();
+    }
+
+    @Override
+    public String toString() {
+        return getItem() + "\nborrowed since : " + borrowedSince() + " days ago";
+    }
+
+    public String printInFile() {
+        return itemSerialNumber + "\n" + dayOfBorrowed;
     }
 
     public publication getItem() {
-        return item;
+        int index = items.operations.searchPublication(itemSerialNumber);
+        return items.operations.publications.get(index);
     }
 
-    public long getTimeOfBorrowed() {
-        return timeOfBorrowed;
+    public long borrowedSince() {
+        return System.currentTimeMillis() / 86400000 - dayOfBorrowed;
     }
 }

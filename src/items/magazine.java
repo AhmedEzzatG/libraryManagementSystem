@@ -1,14 +1,23 @@
 package items;
 
+import java.util.Scanner;
+
 /**
  *
  * @author Ahmedezzat
  */
 public class magazine extends publication {
 
+    public magazine() {
+    }
+
+    public magazine(Scanner in) {
+        super(in);
+    }
+
     @Override
-    public String toString() {
-        return "magazine " + super.toString();
+    public String getType() {
+        return "magazine";
     }
 
     @Override
@@ -18,6 +27,6 @@ public class magazine extends publication {
 
     @Override
     public long getMaxTime() {
-        return 3 * 86400000;
+        return 3;
     }
 }

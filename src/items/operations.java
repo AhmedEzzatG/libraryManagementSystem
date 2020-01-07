@@ -1,6 +1,10 @@
 package items;
 
 import IO.jReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,37 +14,96 @@ import java.util.Scanner;
  */
 public interface operations {
 
-    public static ArrayList<publication> arr = new ArrayList<publication>();
+    public static ArrayList<publication> publications = new ArrayList<publication>();
+    File file = new File("publications.txt");
 
-    public static int searchPublication(String title) {
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i).getTitle().equals(title)) {
-                return i;
-            }
+    public static publication readPublication(Scanner in) {
+        String type = in.nextLine();
+        switch (type) {
+            case "book":
+                return new book(in);
+            case "booklet":
+                return new booklet(in);
+            case "magazine":
+                return new magazine(in);
         }
-        return -1;
+        return null;
     }
 
-    public static int searchPublication(int serialNumber) {
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i).getSerialNumber() == serialNumber) {
-                return i;
+    public static void build() {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+
             }
         }
-        return -1;
+        try {
+            Scanner in = new Scanner(file);
+            while (in.hasNext()) {
+                publications.add(readPublication(in));
+            }
+        } catch (FileNotFoundException ex) {
+            
+        }
+    }
+
+    public static void end() {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+
+            }
+        }
+        try {
+            PrintWriter out = new PrintWriter(file);
+            for (publication p : publications) {
+                out.println(p.printInFile());
+            }
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+
+    public static void menu() {
+        while (true) {
+            int x = jReader.showChooseOptions("", "Publication menu",
+                    new String[]{"Add new Publication", "delete Publication",
+                        "search of Publication", "list of available publications"});
+            switch (x) {
+                case 0:
+                    addPublication();
+                    break;
+                case 1:
+                    deletePublication();
+                    break;
+                case 2:
+                    searchPublication();
+                    break;
+                case 3:
+                    listOfAvailablePublications();
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 
     public static void addPublication() {
         String type = jReader.next("type", "Publication information");
         switch (type) {
             case "book":
-                arr.add(new book());
+                publications.add(new book());
                 break;
             case "booklet":
-                arr.add(new booklet());
+                publications.add(new booklet());
                 break;
             case "magazine":
-                arr.add(new magazine());
+                publications.add(new magazine());
                 break;
             default:
                 jReader.showInvalidInputMessage();
@@ -49,27 +112,95 @@ public interface operations {
         }
     }
 
+    public static void searchPublication() {
+        int x = jReader.showChooseOptions("", "Publication menu",
+                new String[]{"search by title", "search by serial number"});
+        int index;
+        switch (x) {
+            case 0:
+                String title = jReader.next("enter title of Publication", "search");
+                index = searchPublication(title);
+                if (publications.get(index).Avaliable()) {
+                    jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
+                } else {
+                    jReader.showMessage("sorry this Publication is not available\n", "search");
+                }
+                break;
+            case 1:
+                long serialNumber = jReader.nextLong("enter serial number of Publication", "search");
+                index = searchPublication(serialNumber);
+                if (publications.get(index).Avaliable()) {
+                    jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
+                } else {
+                    jReader.showMessage("sorry this Publication is not available", "search");
+                }
+                break;
+        }
+    }
+
+    public static int searchPublication(String title) {
+        for (int i = 0; i < publications.size(); i++) {
+            if (publications.get(i).getTitle().equals(title)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int searchPublication(long serialNumber) {
+        for (int i = 0; i < publications.size(); i++) {
+            if (publications.get(i).getSerialNumber() == serialNumber) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static void deletePublication() {
+        int x = jReader.showChooseOptions("", "delete Publication menu",
+                new String[]{"search by title", "search by serial number"});
+        switch (x) {
+            case 0:
+                String title = jReader.next("enter title of Publication", "delete publication");
+                deletePublication(title);
+                break;
+            case 1:
+                long serialNumber = jReader.nextLong("enter serial number of Publication", "delete publication");
+                deletePublication(serialNumber);
+                break;
+            default:
+                break;
+        }
+    }
+
     public static void deletePublication(String title) {
         int index = searchPublication(title);
         if (index != -1) {
-            arr.remove(index);
-            jReader.showMessage("This Publication was deleted successfully", "successful delete");
+            publications.remove(index);
+            jReader.showMessage("This Publication was deleted successfully", "delete Publication");
         } else {
             jReader.showNotFoundMessage("title");
         }
     }
 
-    public static void deletePublication(int serialNumber) {
+    public static void deletePublication(long serialNumber) {
         int index = searchPublication(serialNumber);
         if (index != -1) {
-            arr.remove(index);
-            jReader.showMessage("This Publication was deleted successfully", "successful delete");
+            publications.remove(index);
+            jReader.showMessage("This Publication was deleted successfully", "delete Publication");
         } else {
             jReader.showNotFoundMessage("serial number");
         }
     }
 
-    public static void listOfPublications() {
-        jReader.showListOfItems(arr);
+    public static void listOfAvailablePublications() {
+        ArrayList<publication> tmp = new ArrayList<>();
+        for (publication a : publications) {
+            if (a.Avaliable()) {
+                tmp.add(a);
+            }
+        }
+        jReader.showListOfItems(tmp);
     }
+
 }

@@ -87,7 +87,7 @@ public interface jReader {
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize(new Dimension(500, 500));
+        scrollPane.setPreferredSize(new Dimension(600, 600));
         JOptionPane.showMessageDialog(null, scrollPane, "list", JOptionPane.PLAIN_MESSAGE);
     }
 

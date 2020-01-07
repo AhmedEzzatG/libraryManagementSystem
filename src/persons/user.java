@@ -2,6 +2,7 @@ package persons;
 
 import IO.jReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -19,6 +20,24 @@ public class user {
         password = jReader.next("password", "user information");
     }
 
+    public user(Scanner in) {
+        userName = in.nextLine();
+        email = in.nextLine();
+        password = in.nextLine();
+        while (!"#".equals(in.nextLine())) {
+            arr.add(new borrowed(in));
+        }
+    }
+
+    public String printInFile() {
+        String s = userName + "\n" + email + "\n" + password + "\n";
+        for (borrowed b : arr) {
+            s += "*\n" + b.printInFile() + "\n";
+        }
+        s += "#";
+        return s;
+    }
+
     private int searchInBorrowed(int serialNumber) {
         for (int i = 0; i < arr.size(); i++) {
             if (arr.get(i).getItem().getSerialNumber() == serialNumber) {
@@ -28,30 +47,45 @@ public class user {
         return -1;
     }
 
-    public int Borrow(int serialNumber) {
+    public void Borrow(int serialNumber) {
         int index = items.operations.searchPublication(serialNumber);
         if (index == -1) {
-            return 0;
+            jReader.showNotFoundMessage("serial number");
+            return;
         }
+        String type = items.operations.publications.get(index).getType();
         if (searchInBorrowed(serialNumber) != -1) {
-            return 1;
+            jReader.showMessage("you already borrow this " + type, "borrow " + type);
+            return;
         }
-        if (items.operations.arr.get(index).Avaliable() == false) {
-            return 2;
+        if (items.operations.publications.get(index).Avaliable() == false) {
+            jReader.showMessage("sorry this " + type + " not avaliable at present", "borrow " + type);
+            return;
         }
-        items.operations.arr.get(index).borrowed();
-        arr.add(new borrowed(items.operations.arr.get(index)));
-        return 3;
+        items.publication p = items.operations.publications.get(index);
+        jReader.showMessage(p.toString(), "borrow " + type);
+        p.borrowed();
+        arr.add(new borrowed(p.getSerialNumber()));
+        jReader.showMessage("The borrowing process has been completed , you have a "
+                + p.getMaxTime() + " days to return this " + type + " or you will pay " + p.getPenalty() + "$",
+                "borrow " + type);
     }
 
-    public boolean returnBorrowed(int serialNumber) {
+    public void returnBorrowed(int serialNumber) {
         for (int i = 0; i < arr.size(); i++) {
             if (arr.get(i).getItem().getSerialNumber() == serialNumber) {
                 arr.get(i).getItem().returnBorrowed();
-                return true;
+                String type = arr.get(i).getItem().getType();
+                String message = "thank you for return this " + type;
+                if (arr.get(i).overPeriod()) {
+                    message += "but you have to pay " + arr.get(i).getItem().getPenalty() + "$ because you are late.";
+                }
+                jReader.showMessage(message, "return " + type);
+                arr.remove(i);
+                return;
             }
         }
-        return false;
+        jReader.showMessage("this serial number NOT FOUND in your borrowed publications, please try again", "ERROR NOT FOUND");
     }
 
     public String getEmail() {
