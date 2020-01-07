@@ -25,7 +25,7 @@ public interface jReader {
         String s = JOptionPane.showInputDialog(null, message, title, JOptionPane.QUESTION_MESSAGE);
         if (s == null) {
             showInvalidInputMessage();
-            return next(message);
+            return next(message, title);
         }
         return s;
     }
@@ -44,7 +44,7 @@ public interface jReader {
             return Integer.parseInt(next(message, title));
         } catch (Exception e) {
             showInvalidInputMessage();
-            return nextInt(message);
+            return nextInt(message, title);
         }
     }
 
@@ -62,7 +62,7 @@ public interface jReader {
             return Long.parseLong(next(message, title));
         } catch (Exception e) {
             showInvalidInputMessage();
-            return nextLong(message);
+            return nextLong(message,title);
         }
     }
 
