@@ -78,16 +78,24 @@ public class operations {
         activeUser = p;
     }
 
-    public static boolean logIn(String email, String password) {
+    public static int search(String email) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getEmail().equals(email)) {
-                if (users.get(i).login(password)) {
-                    activeUser = users.get(i);
-                    return true;
-                }
-                jReader.showMessage("wrong password", "login");
-                return false;
+                return i;
             }
+        }
+        return -1;
+    }
+
+    public static boolean logIn(String email, String password) {
+        int i = search(email);
+        if (i != -1) {
+            if (users.get(i).login(password)) {
+                activeUser = users.get(i);
+                return true;
+            }
+            jReader.showMessage("wrong password", "login");
+            return false;
         }
         jReader.showNotFoundMessage("email");
         return false;

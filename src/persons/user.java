@@ -17,6 +17,10 @@ public class user {
     public user() {
         userName = jReader.next("user name", "user information");
         email = jReader.next("email", "user information");
+        while (operations.search(email) != -1) {
+            jReader.showMessage("this email is used before,please try again with email", "invalid email");
+            email = jReader.next("email", "user information");
+        }
         password = jReader.next("password", "user information");
     }
 

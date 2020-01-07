@@ -44,7 +44,7 @@ public interface operations {
                 publications.add(readPublication(in));
             }
         } catch (FileNotFoundException ex) {
-            
+
         }
     }
 
@@ -120,6 +120,10 @@ public interface operations {
             case 0:
                 String title = jReader.next("enter title of Publication", "search");
                 index = searchPublication(title);
+                if (index == -1) {
+                    jReader.showNotFoundMessage("title");
+                    return;
+                }
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {
@@ -129,6 +133,10 @@ public interface operations {
             case 1:
                 long serialNumber = jReader.nextLong("enter serial number of Publication", "search");
                 index = searchPublication(serialNumber);
+                if (index == -1) {
+                    jReader.showNotFoundMessage("serial number");
+                    return;
+                }
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {

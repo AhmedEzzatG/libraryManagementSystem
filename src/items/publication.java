@@ -9,7 +9,7 @@ import java.util.Scanner;
  */
 public abstract class publication {
 
-    private final String title;
+    private String title;
     private final long serialNumber;
     private String author, publisher;
     private int numberOfCopies, numberAvaliable;
@@ -18,7 +18,13 @@ public abstract class publication {
         title = jReader.next("title", "Publication information");
         author = jReader.next("author", "Publication information");
         publisher = jReader.next("publisher", "Publication information");
-        serialNumber = jReader.nextLong("serial number", "Publication information");
+        long x = jReader.nextLong("serial number", "Publication information");
+        while (operations.searchPublication(x) != -1) {
+            jReader.showMessage("this serial number is used before,please try again with another serial",
+                    "invalid serial number");
+            x = jReader.nextLong("serial number", "Publication information");
+        }
+        serialNumber = x;
         numberOfCopies = jReader.nextInt("number of copies", "Publication information");
         numberAvaliable = numberOfCopies;
     }
