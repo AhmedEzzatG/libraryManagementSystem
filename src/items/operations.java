@@ -127,7 +127,8 @@ public interface operations {
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {
-                    jReader.showMessage("sorry this Publication is not available\n", "search");
+                    jReader.showMessage("sorry this Publication is not availablein the present time\n"
+                            + publications.get(index), "search");
                 }
                 break;
             case 1:
@@ -140,7 +141,8 @@ public interface operations {
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {
-                    jReader.showMessage("sorry this Publication is not available", "search");
+                    jReader.showMessage("sorry this Publication is not available in the present time\n"
+                            + publications.get(index), "search");
                 }
                 break;
         }
