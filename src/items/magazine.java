@@ -8,7 +8,7 @@ import java.util.Scanner;
  */
 public class magazine extends publication {
 
-    public magazine() {
+    public magazine()  throws IO.cancelOperationException {
     }
 
     public magazine(Scanner in) {
@@ -27,6 +27,6 @@ public class magazine extends publication {
 
     @Override
     public long getMaxTime() {
-        return 3;
+        return 12;
     }
 }

@@ -1,5 +1,6 @@
 package items;
 
+import IO.cancelOperationException;
 import IO.jReader;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public abstract class publication {
     private String author, publisher;
     private int numberOfCopies, numberAvaliable;
 
-    public publication() {
+    public publication() throws cancelOperationException {
         title = jReader.next("title", "Publication information");
         author = jReader.next("author", "Publication information");
         publisher = jReader.next("publisher", "Publication information");
@@ -39,6 +40,14 @@ public abstract class publication {
         in.nextLine();
         numberAvaliable = in.nextInt();
         in.nextLine();
+    }
+    
+    public void modify() throws cancelOperationException{
+        title = jReader.next("title", "modify Publication information");
+        author = jReader.next("author", "modify Publication information");
+        publisher = jReader.next("publisher", "modify Publication information");
+        numberOfCopies = jReader.nextInt("number of copies", "modify Publication information");
+        numberAvaliable = numberOfCopies;
     }
 
     @Override

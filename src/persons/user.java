@@ -1,5 +1,6 @@
 package persons;
 
+import IO.cancelOperationException;
 import IO.jReader;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,7 +15,7 @@ public class user {
 
     ArrayList<borrowed> arr = new ArrayList<borrowed>();
 
-    public user() {
+    public user() throws cancelOperationException {
         userName = jReader.next("user name", "user information");
         email = jReader.next("email", "user information");
         while (operations.search(email) != -1) {
@@ -42,7 +43,7 @@ public class user {
         return s;
     }
 
-    private int searchInBorrowed(int serialNumber) {
+    private int searchInBorrowed(long serialNumber) {
         for (int i = 0; i < arr.size(); i++) {
             if (arr.get(i).getItem().getSerialNumber() == serialNumber) {
                 return i;
@@ -51,7 +52,7 @@ public class user {
         return -1;
     }
 
-    public void Borrow(int serialNumber) {
+    public void Borrow(long serialNumber) {
         int index = items.operations.searchPublication(serialNumber);
         if (index == -1) {
             jReader.showNotFoundMessage("serial number");
@@ -75,7 +76,7 @@ public class user {
                 "borrow " + type);
     }
 
-    public void returnBorrowed(int serialNumber) {
+    public void returnBorrowed(long serialNumber) {
         for (int i = 0; i < arr.size(); i++) {
             if (arr.get(i).getItem().getSerialNumber() == serialNumber) {
                 arr.get(i).getItem().returnBorrowed();

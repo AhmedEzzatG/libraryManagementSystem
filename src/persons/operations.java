@@ -1,5 +1,6 @@
 package persons;
 
+import IO.cancelOperationException;
 import IO.jReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -72,7 +73,7 @@ public class operations {
 
     }
 
-    public static void signUp() {
+    public static void signUp() throws cancelOperationException {
         user p = new user();
         users.add(p);
         activeUser = p;
@@ -101,19 +102,19 @@ public class operations {
         return false;
     }
 
-    public static void personalMenu() {
+    public static void personalMenu() throws cancelOperationException {
         while (true) {
             int x = jReader.showChooseOptions("choose the operation you want to do", "personal menu",
                     new String[]{"borrow Publication", "return borrowed Publication",
                         "list of your borrowed Publications"});
-            int serialNumber;
+            long serialNumber;
             switch (x) {
                 case 0:
-                    serialNumber = jReader.nextInt("serial number of Publication you want to borrow", "borrowed Publications");
+                    serialNumber = jReader.nextLong("serial number of Publication you want to borrow", "borrowed Publications");
                     activeUser.Borrow(serialNumber);
                     break;
                 case 1:
-                    serialNumber = jReader.nextInt("serial number of Publication you want to return", "return borrowed Publications");
+                    serialNumber = jReader.nextLong("serial number of Publication you want to return", "return borrowed Publications");
                     activeUser.returnBorrowed(serialNumber);
                     break;
                 case 2:

@@ -10,14 +10,13 @@ import java.util.Scanner;
  */
 public class manager extends user {
 
-    public manager() {
+    public manager() throws IO.cancelOperationException {
     }
 
     public manager(Scanner in) {
         super(in);
     }
 
-    
     public void listOfBorrowedPublications() {
         ArrayList<String> a = new ArrayList<String>();
         for (user e : operations.users) {

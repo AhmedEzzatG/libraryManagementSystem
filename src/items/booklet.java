@@ -8,7 +8,7 @@ import java.util.Scanner;
  */
 public class booklet extends publication {
 
-    public booklet() {
+    public booklet()  throws IO.cancelOperationException {
     }
 
     public booklet(Scanner in) {
@@ -27,6 +27,6 @@ public class booklet extends publication {
 
     @Override
     public long getMaxTime() {
-        return 4;
+        return 12;
     }
 }

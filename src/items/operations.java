@@ -1,5 +1,6 @@
 package items;
 
+import IO.cancelOperationException;
 import IO.jReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,22 +70,25 @@ public interface operations {
 
     }
 
-    public static void menu() {
+    public static void managerMenu() throws cancelOperationException {
         while (true) {
             int x = jReader.showChooseOptions("", "Publication menu",
-                    new String[]{"Add new Publication", "delete Publication",
+                    new String[]{"Add new Publication", "modfiy Publication","delete Publication",
                         "search of Publication", "list of available publications"});
             switch (x) {
                 case 0:
                     addPublication();
                     break;
                 case 1:
-                    deletePublication();
+                    modifyPublication();
                     break;
                 case 2:
-                    searchPublication();
+                    deletePublication();
                     break;
                 case 3:
+                    searchPublication();
+                    break;
+                case 4:
                     listOfAvailablePublications();
                     break;
                 default:
@@ -93,26 +97,59 @@ public interface operations {
         }
     }
 
-    public static void addPublication() {
-        String type = jReader.next("type", "Publication information");
-        switch (type) {
-            case "book":
-                publications.add(new book());
-                break;
-            case "booklet":
-                publications.add(new booklet());
-                break;
-            case "magazine":
-                publications.add(new magazine());
-                break;
-            default:
-                jReader.showInvalidInputMessage();
-                addPublication();
-                break;
+    public static void userMenu() throws cancelOperationException {
+        while (true) {
+            int x = jReader.showChooseOptions("", "Publication menu",
+                    new String[]{"search of Publication", "list of available publications"});
+            switch (x) {
+                case 0:
+                    searchPublication();
+                    break;
+                case 1:
+                    listOfAvailablePublications();
+                    break;
+                default:
+                    return;
+            }
         }
     }
 
-    public static void searchPublication() {
+    public static void addPublication() throws cancelOperationException {
+        String type = null;
+        int choose = jReader.showChooseOptions("choose type of publication", "add publication", 
+                new String[]{"book","booklet","magazine"});
+        switch (choose) {
+            case 0:
+                publications.add(new book());
+                break;
+            case 1:
+                publications.add(new booklet());
+                break;
+            case 2:
+                publications.add(new magazine());
+                break;
+            default:
+                throw new cancelOperationException();
+        }
+    }
+
+    public static void modifyPublication() throws cancelOperationException {
+        long serialNumber = jReader.nextInt("serial number of Publication you want to modify", "modify Publications");
+        int index = searchPublication(serialNumber);
+        if (index == -1) {
+            jReader.showNotFoundMessage("serial number");
+            return;
+        }
+        String type = publications.get(index).getType();
+        if (publications.get(index).getNumberAvaliable() < publications.get(index).getNumberOfCopies()) {
+            jReader.showMessage("there some copies of this" + type + " borrowed,you can't modify", "modify " + type);
+            return;
+        }
+        jReader.showMessage("are you sure you want to modify this " + type, "modify " + type);
+        publications.get(index).modify();
+    }
+
+    public static void searchPublication() throws cancelOperationException {
         int x = jReader.showChooseOptions("", "Publication menu",
                 new String[]{"search by title", "search by serial number"});
         int index;
@@ -127,7 +164,8 @@ public interface operations {
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {
-                    jReader.showMessage("sorry this Publication is not available\n", "search");
+                    jReader.showMessage("sorry this Publication is not availablein the present time\n"
+                            + publications.get(index), "search");
                 }
                 break;
             case 1:
@@ -140,7 +178,8 @@ public interface operations {
                 if (publications.get(index).Avaliable()) {
                     jReader.showMessage("this Publication is Available\n" + publications.get(index), "search");
                 } else {
-                    jReader.showMessage("sorry this Publication is not available", "search");
+                    jReader.showMessage("sorry this Publication is not available in the present time\n"
+                            + publications.get(index), "search");
                 }
                 break;
         }
@@ -164,7 +203,7 @@ public interface operations {
         return -1;
     }
 
-    public static void deletePublication() {
+    public static void deletePublication() throws cancelOperationException {
         int x = jReader.showChooseOptions("", "delete Publication menu",
                 new String[]{"search by title", "search by serial number"});
         switch (x) {

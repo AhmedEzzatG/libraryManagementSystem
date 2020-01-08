@@ -12,58 +12,70 @@ import javax.swing.JTextArea;
  */
 public interface jReader {
 
-    public static String next(String message) {
+    public static String next(String message) throws cancelOperationException {
         String s = JOptionPane.showInputDialog(message);
         if (s == null) {
+            throw new cancelOperationException();
+        }
+        if (s.isEmpty()) {
             showInvalidInputMessage();
             return next(message);
         }
         return s;
     }
 
-    public static String next(String message, String title) {
+    public static String next(String message, String title) throws cancelOperationException {
         String s = JOptionPane.showInputDialog(null, message, title, JOptionPane.QUESTION_MESSAGE);
         if (s == null) {
+            throw new cancelOperationException();
+        }
+        if (s.isEmpty()) {
             showInvalidInputMessage();
             return next(message, title);
         }
         return s;
     }
 
-    public static int nextInt(String message) {
+    public static int nextInt(String message) throws cancelOperationException {
         try {
             return Integer.parseInt(next(message));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             showInvalidInputMessage();
             return nextInt(message);
         }
     }
 
-    public static int nextInt(String message, String title) {
+    public static int nextInt(String message, String title) throws cancelOperationException {
         try {
             return Integer.parseInt(next(message, title));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             showInvalidInputMessage();
             return nextInt(message, title);
         }
     }
 
-    public static long nextLong(String message) {
+    public static long nextLong(String message) throws cancelOperationException {
         try {
             return Long.parseLong(next(message));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             showInvalidInputMessage();
             return nextLong(message);
         }
     }
 
-    public static long nextLong(String message, String title) {
+    public static long nextLong(String message, String title) throws cancelOperationException {
         try {
             return Long.parseLong(next(message, title));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             showInvalidInputMessage();
-            return nextLong(message,title);
+            return nextLong(message, title);
         }
+    }
+
+    public static int showChooseOptions(String massage, String title, String[] options) {
+        int x = JOptionPane.showOptionDialog(null, massage, title,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        return x;
     }
 
     public static void showInvalidInputMessage() {
@@ -91,9 +103,4 @@ public interface jReader {
         JOptionPane.showMessageDialog(null, scrollPane, "list", JOptionPane.PLAIN_MESSAGE);
     }
 
-    public static int showChooseOptions(String massage, String title, String[] options) {
-        int x = JOptionPane.showOptionDialog(null, massage, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        return x;
-    }
 }
